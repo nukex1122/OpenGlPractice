@@ -50,6 +50,8 @@ float texCoord[] = {
 	0.5f, 1.0f
 };
 
+float mix = 0.2f;
+
 int main() {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -148,7 +150,8 @@ int main() {
 		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		shader.use();
+		shader.use();//dont really need this rn because the shader has already been activated before the while loop
+		shader.setFloat("mixV", mix);
 		//shader.setFloat("offset", 0.5f);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture[0]);
@@ -174,4 +177,14 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		mix += 0.01;
+		if (mix > 1.0)
+			mix = 1.0;
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		mix -= 0.01;
+		if (mix < 0.0)
+			mix = 0.0;
+	}
 }
