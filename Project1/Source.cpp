@@ -120,7 +120,7 @@ int main() {
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	Shader shader("./vertexShader.vs", "./fragmentShader.fs");
+	Shader shader("Shaders/vertexShader.vs", "Shaders/fragmentShader.fs");
 
 	unsigned int VBO, VAO, EBO;
 	glGenVertexArrays(1, &VAO);
@@ -152,7 +152,7 @@ int main() {
 
 	int width, height, nrChannels;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load("Images/container.jpg", &width, &height, &nrChannels, 0);
 
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -164,7 +164,7 @@ int main() {
 	stbi_image_free(data);
 
 	glBindTexture(GL_TEXTURE_2D, texture[1]);
-	data = stbi_load("awesomeface.png", &width, &height, &nrChannels, 0);
+	data = stbi_load("Images/awesomeface.png", &width, &height, &nrChannels, 0);
 
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
