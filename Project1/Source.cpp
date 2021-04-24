@@ -252,7 +252,8 @@ int main() {
 		lightShader.setMat4("view", view);
 		lightShader.setMat4("projection", projection);
 		lightShader.setMat4("model", model);
-		
+		lightShader.setVec3("lightColor", diffuseColor);
+
 		glBindVertexArray(lightVao);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
