@@ -135,7 +135,7 @@ int main() {
 	glm::vec3 objColor = glm::vec3(1.0f, 0.5f, 0.31f);
 	glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	lightingShader.use();
-	lightingShader.setVec3("lightPos", lightPos);
+
 
 	//setting the wrapping and filtering options of the texture object
 	/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -216,10 +216,12 @@ int main() {
 		lightingShader.setVec3("objectColor", objColor);
 		lightingShader.setVec3("lightColor", lightColor);
 		lightingShader.setVec3("viewPos", camera.cameraPos);
-
+	
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.fov), 800.0f / 600.0f, 0.1f, 100.0f);
 		glm::mat4 model = glm::mat4(1.0f);
+		glm::vec3 lightPosView = view * glm::vec4(lightPos, 1.0);
+		lightingShader.setVec3("lightPos", lightPosView);
 
 		lightingShader.setMat4("view", view);
 		lightingShader.setMat4("projection", projection);
