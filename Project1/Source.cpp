@@ -133,15 +133,17 @@ int main() {
 
 	
 
-	unsigned int texture[2];
-	glGenTextures(2, texture);
+	unsigned int texture[3];
+	glGenTextures(3, texture);
 
 	loadTextures("Images/container2.png", texture[0]);
 	loadTextures("Images/container2_specular.png", texture[1]);
+	loadTextures("Images/matrix.jpg", texture[2]);
 
 	lightingShader.use();
 	lightingShader.setInt("material.diffuse", 0);
 	lightingShader.setInt("material.specular", 1);
+	lightingShader.setInt("material.emission", 2);
 	lightingShader.setVec3("light.position", lightPos);
 
 	/*glBindTexture(GL_TEXTURE_2D, texture[1]);
@@ -201,10 +203,10 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		lightingShader.use();
-		lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+		lightingShader.setFloat("time", glfwGetTime());
 		lightingShader.setFloat("material.shininess", 64.0f);
-		lightingShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-		lightingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+		lightingShader.setVec3("light.ambient", 0.1f, 0.1f, 0.1f);
+		lightingShader.setVec3("light.diffuse", 0.2f, 0.2f, 0.2f);
 		lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 		lightingShader.setVec3("viewPos", camera.cameraPos);
 
@@ -217,6 +219,8 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, texture[0]);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture[1]);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, texture[2]);
 
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.fov), 800.0f / 600.0f, 0.1f, 100.0f);
@@ -314,7 +318,7 @@ void loadTextures(const char* path, unsigned int& textureId) {
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else {
-		std::cout << "Failed to load texture1\n";
+		std::cout << "Failed to load texture "<<textureId<<"\n";
 	}
 	stbi_image_free(data);
 }
