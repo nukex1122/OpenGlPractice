@@ -143,10 +143,7 @@ int main() {
 	lightingShader.setInt("material.diffuse", 0);
 	lightingShader.setInt("material.specular", 1);
 	/*lightingShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);*/
-	lightingShader.setVec3("light.position", lightPos);
-	lightingShader.setFloat("light.constant", 1.0f);
-	lightingShader.setFloat("light.linear", 0.09f);
-	lightingShader.setFloat("light.quadratic", 0.032f);
+
 	/*glBindTexture(GL_TEXTURE_2D, texture[1]);
 	data = stbi_load("Images/awesomeface.png", &width, &height, &nrChannels, 0);
 
@@ -211,6 +208,11 @@ int main() {
 		lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 		lightingShader.setVec3("viewPos", camera.cameraPos);
 
+		lightingShader.setVec3("light.position", camera.cameraPos);
+		lightingShader.setVec3("light.direction", camera.cameraFront);
+		lightingShader.setFloat("light.cutoff", glm::cos(glm::radians(12.5f))); //Optimization: passing cos value so as to not calculate cos^-1 which is an expensive operation
+		lightingShader.setFloat("light.outerCutoff", glm::cos(glm::radians(17.5f))); 
+
 		glm::vec3 lightColor = glm::vec3(1.0f);
 		/*lightColor.x = sin(glfwGetTime() * 2.0f);
 		lightColor.y = sin(glfwGetTime() * 0.7f);
@@ -224,6 +226,7 @@ int main() {
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.fov), 800.0f / 600.0f, 0.1f, 100.0f);
 		
+
 		lightingShader.setMat4("view", view);
 		lightingShader.setMat4("projection", projection);
 
