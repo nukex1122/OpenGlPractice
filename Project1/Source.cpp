@@ -142,8 +142,11 @@ int main() {
 	lightingShader.use();
 	lightingShader.setInt("material.diffuse", 0);
 	lightingShader.setInt("material.specular", 1);
-	lightingShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
-
+	/*lightingShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);*/
+	lightingShader.setVec3("light.position", lightPos);
+	lightingShader.setFloat("light.constant", 1.0f);
+	lightingShader.setFloat("light.linear", 0.09f);
+	lightingShader.setFloat("light.quadratic", 0.032f);
 	/*glBindTexture(GL_TEXTURE_2D, texture[1]);
 	data = stbi_load("Images/awesomeface.png", &width, &height, &nrChannels, 0);
 
