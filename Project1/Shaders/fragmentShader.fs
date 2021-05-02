@@ -21,7 +21,7 @@ in vec3 FragPos;
 uniform vec3 viewPos;
 
 struct Light {
-    vec3 position;
+    vec3 direction;
   
     vec3 ambient;
     vec3 diffuse;
@@ -38,7 +38,7 @@ void main()
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
 
     vec3 norm = normalize(Normal);
-    vec3 lightDirection = normalize(light.position - FragPos);
+    vec3 lightDirection = normalize(-light.direction);
     float diffuseValue = max(dot(norm, lightDirection), 0.0);
     vec3 diffuse = light.diffuse * diffuseValue * vec3(texture(material.diffuse, TexCoords));
     
