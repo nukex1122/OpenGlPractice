@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
+#include "Model.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -108,19 +109,6 @@ int main() {
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindVertexArray(VAO);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
 	
 	unsigned int lightVao;
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -132,52 +120,13 @@ int main() {
 	glEnableVertexAttribArray(0);
 
 	
-
-	unsigned int texture[2];
-	glGenTextures(2, texture);
-
-	loadTextures("Images/container2.png", texture[0]);
-	loadTextures("Images/container2_specular.png", texture[1]);
-
-	lightingShader.use();
-	lightingShader.setInt("material.diffuse", 0);
-	lightingShader.setInt("material.specular", 1);
-	/*lightingShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);*/
-
-	/*glBindTexture(GL_TEXTURE_2D, texture[1]);
-	data = stbi_load("Images/awesomeface.png", &width, &height, &nrChannels, 0);
-
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		std::cout << "Failed to load texture2\n";
-	}
-	stbi_image_free(data);*/
-
-	// uncomment this call to draw in wireframe polygons.
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-
-	/*shader.use(); //need to activate shader before setting uniforms
-	shader.setInt("texture1", 0);
-	shader.setInt("texture2", 1);*/
-
 	glEnable(GL_DEPTH_TEST);
 
-	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f,  0.0f,  0.0f),
-		glm::vec3(2.0f,  5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f),
-		glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
+	Shader modelShader("Shaders/vertexShader.vs", "Shaders/fragmentShader_light.fs");
+	
+	string modelpath = "Model/Backpack/backpack.obj";
+	Model backpackModel(modelpath);
+
 	glm::vec3 pointLightPositions[] = {
 		glm::vec3(0.7f,  0.2f,  2.0f),
 		glm::vec3(2.3f, -3.3f, -4.0f),
@@ -196,6 +145,7 @@ int main() {
 	
 	//render loop1
 
+	
 	while (!glfwWindowShouldClose(window)) {
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame; //added to balance out the velocity difference b/w pcs of diff specs
@@ -206,7 +156,7 @@ int main() {
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		lightingShader.use();
+		/*lightingShader.use();
 		lightingShader.setVec3("viewPos", camera.cameraPos);
 		lightingShader.setFloat("material.shininess", 32.0f);
 
@@ -258,22 +208,27 @@ int main() {
 		lightingShader.setVec3("spotLight.direction", camera.cameraFront);
 		lightingShader.setFloat("spotLight.cutoff", glm::cos(glm::radians(12.5f))); //Optimization: passing cos value so as to not calculate cos^-1 which is an expensive operation
 		lightingShader.setFloat("spotLight.outerCutoff", glm::cos(glm::radians(17.5f))); 
+		*/
 
 		glm::vec3 lightColor = glm::vec3(1.0f);
 		/*lightColor.x = sin(glfwGetTime() * 2.0f);
 		lightColor.y = sin(glfwGetTime() * 0.7f);
 		lightColor.z = sin(glfwGetTime() * 1.3f);*/
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture[0]);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture[1]);
 
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.fov), 800.0f / 600.0f, 0.1f, 100.0f);
-		
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 
-		lightingShader.setMat4("view", view);
+		modelShader.use();
+		modelShader.setMat4("view", view);
+		modelShader.setMat4("projection", projection);
+		modelShader.setMat4("model", model);
+
+		backpackModel.Draw(modelShader);
+		/*lightingShader.setMat4("view", view);
 		lightingShader.setMat4("projection", projection);
 
 		glBindVertexArray(VAO);
@@ -302,7 +257,7 @@ int main() {
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 		
-		
+		*/
 
 		glBindVertexArray(0);
 

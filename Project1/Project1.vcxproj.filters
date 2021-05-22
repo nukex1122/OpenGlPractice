@@ -35,5 +35,22 @@
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\fragmentShader.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\fragmentShader_light.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\vertexShader.vs">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
