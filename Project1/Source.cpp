@@ -145,7 +145,7 @@ int main() {
 	
 	//render loop1
 
-	
+	//glDepthFunc(GL_ALWAYS); you can try other options aswell :P 
 	while (!glfwWindowShouldClose(window)) {
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame; //added to balance out the velocity difference b/w pcs of diff specs
@@ -243,7 +243,7 @@ int main() {
 		}*/
 
 
-		/*lightShader.use();
+		lightShader.use();
 		lightShader.setMat4("view", view);
 		lightShader.setMat4("projection", projection);
 
@@ -256,7 +256,7 @@ int main() {
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
-		*/
+		
 
 		glBindVertexArray(0);
 
