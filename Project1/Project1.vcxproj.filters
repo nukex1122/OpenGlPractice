@@ -52,5 +52,8 @@
     <None Include="Shaders\vertexShader.vs">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="Shaders\fragmentShaderBorder.fs">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

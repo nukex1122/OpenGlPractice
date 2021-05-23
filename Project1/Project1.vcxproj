@@ -155,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fragmentShader.fs" />
+    <None Include="Shaders\fragmentShaderBorder.fs" />
     <None Include="Shaders\fragmentShader_light.fs" />
     <None Include="Shaders\vertexShader.vs" />
   </ItemGroup>
