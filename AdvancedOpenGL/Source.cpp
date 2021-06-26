@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <map>
 #include "shader.h"
 #include "stb_image.h"
 #include <glm/glm.hpp>
@@ -159,12 +160,15 @@ int main() {
 	unsigned int cubeTex = loadTextures("Images/marble.jpg");
 	unsigned int floorTex = loadTextures("Images/metal.png");
 	unsigned int grassTex = loadTextures("Images/grass.png");
+	unsigned int windowTex = loadTextures("Images/blending_transparent_window.png");
 
-	shader.use();
+	shader.use(); 
 	shader.setInt("texture1", 0);
 
 	glEnable(GL_DEPTH_TEST);
-	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	vector<glm::vec3> vegetation;
 	vegetation.push_back(glm::vec3(-1.5f, 0.0f, -0.48f));
 	vegetation.push_back(glm::vec3(1.5f, 0.0f, 0.51f));
@@ -212,12 +216,23 @@ int main() {
 		shader.setMat4("model", model);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
+
+		//For blending to work properly, draw opaque objects first, 
+		//then sort the semi transparent objects. sorting  is neccessary
+		//because of the way the depth buffer and depth testing works. Then 
+		//draw all transparent objects in sorted order.
+		std::map<float, glm::vec3> sorted;
+		for (unsigned int i = 0; i < vegetation.size(); i++) {
+			float distance = glm::length(camera.cameraPos - vegetation[i]);
+			sorted[distance] = vegetation[i];
+		}
+
 		glBindVertexArray(grassVAO);
-		glBindTexture(GL_TEXTURE_2D, grassTex);
-		for (unsigned int i = 0; i < vegetation.size(); i++)
+		glBindTexture(GL_TEXTURE_2D, windowTex);
+		for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); it++)
 		{
 			model = glm::mat4(1.0f);
-			model = glm::translate(model, vegetation[i]);
+			model = glm::translate(model, it->second);
 			shader.setMat4("model", model);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
